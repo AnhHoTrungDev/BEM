@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+      integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="./index.css" />
+    <title>BEM</title>
+  </head>
+  <body>
+    <div id="toast"></div>
+    <div>
+      <div onclick="showSuccessToast()" class="btn btn--success">
+        Show success toast
+      </div>
+      <div onclick="showErrorToast()" class="btn btn--error">
+        Show error toast
+      </div>
+    </div>
+    <script>
+      const toast = ({
+        title = "",
+        message = "",
+        type = "info",
+        duration = 3000,
+      }) => {
+        const main = document.getElementById("toast");
+        const icons = {
+          success: "fas fa-check-circle",
+          info: "fas fa-info-circle",
+          warning: "fas fa-exclamation-circle",
+          error: "fas fa-exclamation-circle",
+        };
+
+        const delay = (duration / 1000).toFixed(2);
+
+        if (main) {
+          const toast = document.createElement("div");
+
+          const idTimeout = setTimeout(() => {
+            main.removeChild(toast);
+          }, duration + 1000);
+
+          toast.onclick = (e) => {
+            if (e.target.closest(".toast__close")) {
+              toast.style.animation = `fadeOutClose linear .3s forwards`;
+              clearTimeout(idTimeout);
+
+              setTimeout(() => {
+                main.removeChild(toast);
+              }, 300);
+            }
+          };
+
+          toast.classList.add("toast", `toast--${type}`);
+          toast.style.animation = `slideInLeft ease 0.3s, fadeOut linear 1s ${delay}s forwards`;
+          toast.innerHTML = `
+          <div class="toast__icon">
+           <i class="${icons[type]}" aria-hidden="true"></i>
+          </div>
+          <div class="toast__body">
+            <h3 class="toast__title">${title}</h3>
+            <p class="toast__msg">${message}</p>
+          </div>
+          <div class="toast__close">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </div>`;
+          main.appendChild(toast);
+        }
+      };
+
+      const showSuccessToast = () => {
+        toast({
+          title: "Thành công",
+          message: "Bạn đã gởi tin nhắn thành công",
+          type: "success",
+          duration: 5000,
+        });
+      };
+
+      const showErrorToast = () => {
+        toast({
+          title: "Thất bại",
+          message:
+            "Bạn đã gởi tin nhắn thất bại, vui lòng liên hệ quản trị viên",
+          type: "error",
+          duration: 1000,
+        });
+      };
+    </script>
+  </body>
+</html>
